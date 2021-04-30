@@ -1,0 +1,69 @@
+import random
+import re
+a = ['python', 'java', 'kotlin', 'javascript']
+f = random.choice(a)
+v = (f.replace(f,len(f)*"-"))
+t = list(f)
+print("H A N G M A N")
+i = 0 
+
+list=[]
+while True:
+    w = input('Type "play" to play the game, "exit" to quit: ')
+    if w == "play":
+        pass
+    elif w == "exit":
+        break
+    else:
+        break
+    while i <=8:
+        if v == f:
+            print("You guessed the word {}!".format(v))
+            print("You survived!")
+            print()
+            break
+        elif i == 8 and v != f:
+            print("You lost!")
+            print()
+            break
+
+        print()
+        print(v)
+        k = input("Input a letter: ")
+        if 0 == len(k) or len(k) > 1:
+            print("You should input a single letter")
+            continue
+        else:
+            pass
+        if not k.islower():
+            print("Please enter a lowercase English letter")
+            continue
+        else:
+            pass
+        if k in list:
+            print("You've already guessed this letter")
+            continue
+        else:
+            list.append(k)
+
+        
+        if k in t:
+            pa = [x.start() for x in re.finditer(k, f)]
+            if len(pa)>1:
+                v =v[:pa[0]]+k+v[pa[0]+1:]
+                v =v[:pa[1]]+k+v[pa[1]+1:]
+            elif len(pa)==1:
+                v =v[:pa[0]]+k+v[pa[0]+1:]
+        elif k not in t:
+            print("That letter doesn't appear in the word")
+            
+            i = i+1
+        if i ==8 and v == f:
+            print()
+            print(f)
+            print("You guessed the word!")
+            print("You survived!")
+            break
+        elif i ==8 and v != f:
+            print("You lost!")
+            break
