@@ -1,0 +1,83 @@
+import argparse
+import math
+
+
+def has_negatives(iterable):
+    for g in iterable:
+        if float(g) < 0:
+            return True
+
+
+parser = argparse.ArgumentParser(description="asd")
+parser.add_argument("--type")
+parser.add_argument("--principal")
+parser.add_argument("--interest")
+parser.add_argument("--periods")
+parser.add_argument("--payment")
+args = parser.parse_args()
+alist = []
+
+for arg in vars(args):
+    if getattr(args, arg) is not None:
+        alist.append(getattr(args, arg))
+else:
+    pass
+
+if args.interest is None or args.type not in (
+        "diff", "annuity") or len(alist) != 4 or has_negatives(alist[1:]):
+    print("Incorrect parameter")
+    exit()
+if args.type == "diff":
+    if args.principal is not None and args.periods is not None:
+        m = int(args.periods)
+        p = int(args.principal)
+        i = float(args.interest)
+        z = i / 1200
+        r = 0
+        for x in range(1, m + 1):
+            q = p / m + z * (p - ((p * (x - 1)) / (m)))
+            print("month", x, ":", "is", math.ceil(q))
+            r = math.ceil(q) + r
+    print("\nOverpayment =", r - p)
+elif args.type == "annuity":
+    if args.payment is not None and args.periods is not None:
+        montlyp = int(args.payment)
+        pri = float(args.periods)
+        it = float(args.interest)
+        ip = it / 1200
+        payment = montlyp / ((ip * math.pow(1 + ip, pri)) /
+                             (math.pow(1 + ip, pri) - 1))
+        print(("Your loan principal = {}!").format(round(payment)))
+        print("Overpayment =", round((pri * montlyp) - payment))
+    elif args.principal is not None and args.payment is not None:
+        loan = int(args.principal)
+        mont = int(args.payment)
+        inter = float(args.interest)
+        il = inter / 1200
+        r = 1 + il
+        x = (mont / (mont - (il * loan)))
+        ti = divmod(math.ceil(math.log(x, r)), 12)
+        if ti[0] == 1 and ti[1] == 0:
+            print("It will take 1 year")
+        elif ti[0] == 1:
+            print("It will take 1 year and", ti[1],
+                  "months to repay this loan")
+        elif ti[0] == 0:
+            print("It will take ", ti[1], "months")
+        elif ti[1] == 0:
+            print("It will take", ti[0], "years to repay this loan!")
+        else:
+            print("It will take", ti[0], "years and", ti[1],
+                  "months to repay this loan!")
+        op = mont * math.ceil(math.log(x, r)) - loan
+        print("Overpayment =", op)
+    elif args.principal is not None and args.periods is not None:
+        loan1 = int(args.principal)
+        monty = int(args.periods)
+        inter = float(args.interest)
+        i = inter / 1200
+        payment = loan1 * ((i * math.pow(1 + i, monty)) / (math.pow(1 + i, monty) - 1))
+        op = math.ceil(payment)
+        pog = monty * op - loan1
+        print("Your monthly payment = {}!".format(op))
+        print("Overpayment = {}!".format(pog))
