@@ -1,0 +1,90 @@
+
+def show():
+   print('---------')
+   print('|', x[0], x[1], x[2], '|')
+   print('|', x[3], x[4], x[5], '|')
+   print('|', x[6], x[7], x[8], '|')
+   print('---------')
+x =[" "," "," "," "," "," "," "," "," "]
+def win(q):
+    if x[0:3:1] == [q,q,q] :
+        print(q)
+    elif x[3:6:1] == [q,q,q]:
+        print(q +"WİN")
+        return True
+    elif x[6:9:1] == [q,q,q]:
+        print(q +"win")
+        return True
+    elif x[0:9:3] == [q,q,q]:
+        print(q +"win")
+        return True
+    elif x[1:9:3] == [q,q,q]:
+        print(q +"win")
+        return True
+    elif x[2:9:3] == [q,q,q]:
+        print(q +"win")
+        return True
+    elif x[2:8:2] == [q,q,q]:
+        print(q +"win")
+        return True
+    elif x[0:9:4] == [q,q,q]:
+        print(q +"win")
+        return True
+    elif x[1:9:3] == [q,q,q]:
+        print(q +"win")
+        return True
+def yek(w):
+    while True:
+        xy = input("Enter the cordinates:")
+        if "".join(xy.split()).isnumeric():
+            xy = [int(i) for i in xy.split()]
+            if 1 <= xy[0] <= 3 and 1 <= xy[1] <=3:
+                index = (xy[0] - 1) * 3 + xy[1] - 1
+                if x[index] == " ":
+                    x[index] = w
+                    break
+                else:
+                    print("This cell is occupied! Choose another one!")
+            else:
+                print("Coordinates should be from 1 to 3!")
+        else:
+            print("You should enter numbers!")
+def ow():
+    if win("X"):        
+        print("X wins")
+    elif win("O"):
+        print("O wins")
+    elif x.count(" ") == 0:
+        print("Draw")
+    elif x.count(" ") != 0:
+        print("Game not finished")
+show()
+for i in range(1,10):
+    if i%2 == 0:
+        yek("O")
+    else:
+        yek("X")
+    show()
+    if win("X"):        
+        break
+    elif win("O"):
+        break
+    elif i == 9:
+        print("Draw")
+    
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+  
