@@ -1,0 +1,22 @@
+import requests
+import json
+
+h = input()
+hl = h.lower()
+cache = ["usd","eur"]
+while True:
+    c = input()
+    cl = c.lower()
+    if len(c)==0:
+        break
+    m = int(input())
+    r = requests.get("http://www.floatrates.com/daily/{}.json".format(hl))
+    json_1 = json.loads(r.content)
+    print("Checking the cache...")
+    if cl in cache:
+        print("Oh! It is in the cache!")
+        print("You received {} {}.".format(round(json_1[cl]["rate"] * m,2),c.upper()))
+    elif cl not in cache:
+        print("Sorry, but it is not in the cache!")
+        print("You received {} {}.".format(round(json_1[cl]["rate"] * m,2),c.upper()))
+        cache.append(cl)
