@@ -1,0 +1,97 @@
+def take():
+    global money
+    print("")
+    print(f"I gave you {money}\n")
+    print("")
+    money = 0
+
+def fill():
+    global water,milk,coffee_beans,disposable_cups,money
+    print()
+    water =water + int(input("Write how many ml of water do you want to add:\n"))
+    milk = milk + int(input("Write how many ml of milk do you want to add:\n"))
+    coffee_beans = coffee_beans + int(input("Write how many grams of coffee beans do you want to add:\n"))
+    disposable_cups = disposable_cups + int(input("Write how many disposable cups of coffee do you want to add:\n"))
+    print()
+
+def buy():
+    for i in range(1):
+        global water,milk,coffee_beans,disposable_cups,money
+        print()
+        ater = water
+        ilk = milk
+        offee_beans = coffee_beans
+        isposable_cups = disposable_cups
+        k = input("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:\n")
+        if k == "1":
+            ater = water-250
+            offee_beans = coffee_beans - 16
+            oney = 4
+            isposable_cups = disposable_cups - 1
+        elif k == "2":
+            ater = water - 350
+            ilk = milk - 75
+            offee_beans = coffee_beans - 20
+            oney = 7
+            isposable_cups = disposable_cups -1
+        elif k == "3":
+            ater = water- 200
+            ilk = milk - 100
+            offee_beans = coffee_beans - 12
+            oney =  6
+            isposable_cups = disposable_cups -1
+        elif k == "back":
+            break
+
+
+        if ater <= 0:
+            print("Sorry,not enough water!")
+        elif ilk <= 0:
+            print("Sorry,not enough milk!")
+        elif offee_beans <= 0:
+            print("Sorry,not enough coffee_beans!")
+        elif isposable_cups <= 0:
+            print("Sorry,not enough disposable_cups!")    
+        else:
+            print("I have enough resources, making you a coffee!")
+            water = ater
+            milk = ilk
+            coffee_beans = offee_beans
+            disposable_cups = isposable_cups
+            money = oney + money
+
+        print("")
+
+
+
+
+
+
+def remaining():print(f"""
+The coffee machine has:
+{water} of water
+{milk} of milk
+{coffee_beans} of coffee beans
+{disposable_cups} of disposable cups
+{money} of money
+""")
+
+
+water = 400 
+milk = 540
+coffee_beans = 120  
+disposable_cups = 9  
+money = 550 
+
+while True:
+    act = input("Write action (buy, fill, take,remaining,exit):\n")
+    if act =="buy":
+        buy()
+    elif act == "fill":
+        fill()
+    elif act == "take":
+        take()
+    elif act == "remaining":
+        remaining()
+    elif act == "exit":
+        break
