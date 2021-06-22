@@ -1,0 +1,288 @@
+import random
+import sqlite3 as sq
+
+c = sq.connect("card.s3db")
+x = c.cursor()
+x.execute('drop table if exists card')
+x.execute("""CREATE TABLE IF NOT EXISTS card(
+    id INTEGER PRIMARY KEY,
+    number  TEXT,
+    pin     TEXT, 
+    balance INTEGER  DEFAULT 0
+)""")
+c.commit()
+
+def luhn2(card1):
+    card = [int(it) for it in card1]
+    card[0] *= 2
+    card[2] *= 2
+    card[4] *= 2
+    card[6] *= 2
+    card[8] *= 2
+    card[10] *= 2
+    card[12] *= 2
+    card[14] *= 2
+    k = 0
+    for i in card:
+        if i > 9:
+            card[k] = i - 9
+        else:
+            card[k] = i
+        k += 1
+    o = 0
+    q = 0
+    for y in card:
+        if q < 15:
+            o += y
+        q += 1
+    if o % 10 == 0:
+        p = 0
+    elif o % 10 != 0:
+        p = ((o // 10 + 1) * 10) - o
+    if len(card1) != 16:
+        return False
+    elif p == card[15]:
+        return True
+    elif p != card[15]:
+        return False
+
+
+
+class BANK:
+    def __init__(self):
+        self.acc = {}
+
+    def crate(self):
+        while True:
+            ran = random.randrange(0000000000, 999999999)
+            self.card_number = (400000000000000 + int('{:10d}'.format(ran)))
+            card1 = list(str(self.card_number))
+
+            card = [int(it) for it in card1]
+            card[0] *= 2
+            card[2] *= 2
+            card[4] *= 2
+            card[6] *= 2
+            card[8] *= 2
+            card[10] *= 2
+            card[12] *= 2
+            card[14] *= 2
+            k = 0
+            for i in card:
+                if i > 9:
+                    card[k] = i - 9
+                else:
+                    card[k] = i
+                k += 1
+            o = 0
+            for y in card:
+                o += y
+            if o % 10 == 0:
+                p = 0
+            elif o % 10 != 0:
+                p = ((o // 10 + 1) * 10) - o
+
+            if luhn2(f"400000{ran}{p}"):
+                break
+            elif not luhn2(f"400000{ran}{p}"):
+                pass
+
+
+        self.card_number = f"400000{ran}{p}"
+        self.card_number = int(self.card_number)
+
+        self.pword = str(random.randrange(0000, 9999)).zfill(4)
+
+
+        x.execute("INSERT INTO card (number,pin) VALUES (?,?)",
+                    (self.card_number, self.pword))
+        c.commit()
+
+    def __str__(self):
+        return f"""Your card has been created
+Your card number:
+{self.card_number}
+Your card PIN:
+{self.pword}"""
+
+
+def luhn(card1):
+    card = [int(it) for it in card1]
+    card[0] *= 2
+    card[2] *= 2
+    card[4] *= 2
+    card[6] *= 2
+    card[8] *= 2
+    card[10] *= 2
+    card[12] *= 2
+    card[14] *= 2
+    k = 0
+    for i in card:
+        if i > 9:
+            card[k] = i - 9
+        else:
+            card[k] = i
+        k += 1
+    o = 0
+    q = 0
+    for y in card:
+        if q < 15:
+            o += y
+        q += 1
+    if o % 10 == 0:
+        p = 0
+    elif o % 10 != 0:
+        p = ((o // 10 + 1) * 10) - o
+    if p == card[15]:
+        return True
+    elif p != card[15]:
+        return False
+
+
+def add(mon, nu1):
+    x.execute("UPDATE card set balance = NULL WHERE id = ?;", (nu1, ))
+    c.commit()
+    x.execute("UPDATE card set balance = ? WHERE id = ?;", (mon, nu1))
+    c.commit()
+    print("Income was added!")
+
+
+def dot(nu2, nu3, mon1, mon2):
+
+    x.execute("UPDATE card set balance = NULL WHERE number = ?;", (nu2, ))
+    c.commit()
+    x.execute("UPDATE card set balance = NULL WHERE number = ?;", (nu3, ))
+    c.commit()
+    x.execute("UPDATE card set balance = ? WHERE number = ?;", (mon1, nu2))
+    c.commit()
+    x.execute("UPDATE card set balance = ? WHERE number = ?;", (mon2, nu3))
+    c.commit()
+
+
+dt = {}
+dt1 = {}
+tm = 0
+q = BANK()
+while True:
+    k = input("""1. Create an account
+2. Log into account
+0. Exit
+""")
+    print()
+    if k == "1":
+        tm += 1
+        q.crate()
+        c.commit
+        dt[str(tm)] = [0]
+
+        print(q.__str__())
+        print()
+    elif k == "2":
+        s1 = input("Enter your card number:\n")
+        s2 = input("Enter your PIN:\n")
+        p1 = x.execute("SELECT id,number,pin FROM card WHERE number = ?;",
+                       [s1]).fetchone()
+        c.commit()
+        p2 = x.execute("SELECT id,number,pin FROM card WHERE pin = ? ;",
+                       [s2]).fetchone()
+        c.commit()
+        try:
+            if p1 == p2 and len(p1) != 0:
+
+                print("\nYou have successfully logged in!")
+                while True:
+                    p = input("""
+1. Balance
+2. Add income
+3. Do transfer
+4. Close account
+5. Log out
+0. Exit
+""")
+
+                    if p == "1":
+
+                        print(
+                            "\nBalance:",
+                            x.execute("SELECT balance from card WHERE id=? ;",
+                                      (p1[0], )).fetchone()[0])
+                        c.commit()
+                    elif p == "2":
+                        try:
+                            par = int(input("\nEnter income:\n"))
+                            print(dt[str(p1[0])])
+                            dt[str(p1[0])].append(par)
+                            qwe = sum(dt[str(p1[0])])
+
+                            add(qwe, p1[0])
+                        except:
+                            print(p1[0])
+                        continue
+                    elif p == "3":
+                        q1 = x.execute("select number from card ").fetchall()
+                        c.commit()
+                        q2 = [al[0] for al in q1]
+
+                        tr = input("\nTransfer\nEnter card number:\n")
+                        if not luhn(tr):
+                            print(
+                                "Probably you made a mistake in the card number.Please try again!"
+                            )
+                            continue
+                        elif p1[1] == tr:
+                            print(
+                                "You can't transfer money to the same account!"
+                            )
+                            continue
+                        elif tr not in q2:
+                            print("Such a card does not exist.")
+                            continue
+                        else:
+                            o1 = x.execute(
+                                "SELECT id FROM card WHERE number = ?;",
+                                [tr]).fetchone()
+                            c.commit()
+                            o1 = o1[0]
+                            mo = int(
+                                input(
+                                    "Enter how much money you want to transfer:\n"
+                                ))
+
+                            if mo <= sum(dt[str(p1[0])]):
+                                print("ok")
+                                dt[str(p1[0])].append(-mo)
+                                su1 = sum(dt[str(p1[0])])
+                                dt[str(o1)].append(mo)
+                                su2 = sum(dt[str(o1)])
+
+                            else:
+                                print("Not enough money!")
+                                continue
+                        dot(tr, str(p1[1]), su2, su1)
+                        print("Success!")
+                        continue
+                    elif p == "4":
+                        x.execute("DELETE from card WHERE id=?", (p1[0], ))
+                        c.commit()
+                        print("\nThe account has been closed!\n")
+                        break
+                    elif p == "5":
+                        print()
+                        print("You have successfully logged out!")
+                        break
+                    elif p == "0":
+                        print()
+                        print("bye")
+                        c.close()
+                        exit()
+            else:
+                print()
+                print("Wrong card number or PIN!")
+                print()
+        except Exception:
+            pass
+    elif k == "0":
+        print()
+        print("bye")
+        c.close()
+        exit()
